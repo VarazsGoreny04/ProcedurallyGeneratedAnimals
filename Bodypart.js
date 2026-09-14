@@ -8,8 +8,8 @@ import {
 	SegmentDescriptor
 } from './Descriptor.js';
 
-/** Describes a bodypart of a creature. */
-export class Bodypart {
+/** Describes a body part of a creature. */
+export class BodyPart {
 	/** Render on top. */
 	static TOP = true;
 	/** Render on bottom. */
@@ -19,7 +19,7 @@ export class Bodypart {
 	 * Creates a Bodypart object.
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
-	 * @param {Color} color Color of the bodypart.
+	 * @param {Color} color Color of the body part.
 	 */
 	constructor(segment, render, color) {
 		this.segment = segment;
@@ -27,12 +27,12 @@ export class Bodypart {
 		this.color = color;
 	}
 
-	/** Draws this bodypart instance. */
-	draw() { }
+	/** Draws this body part instance. */
+	draw() { throw "This function must be implemented in an inherited class!"; }
 }
 
 /** Describes one pair of eyes of a creature. */
-export class Eye extends Bodypart {
+export class Eye extends BodyPart {
 	/**
 	 * Creates an Eye object.
 	 * @param {Segment} segment The parent segment.
@@ -65,7 +65,7 @@ export class Eye extends Bodypart {
 }
 
 /** Describes a pair of fins of a creature. */
-export class SideFin extends Bodypart {
+export class SideFin extends BodyPart {
 	constructor(segment, render, length, width, angle, color) {
 		super(segment, render, color);
 
@@ -79,13 +79,13 @@ export class SideFin extends Bodypart {
 	 * @param {Point} position The position of the ellipse.
 	 * @param {number} angle The angle of the ellipse.
 	 * @param {number} width The width of the ellipse.
-	 * @param {number} height The height of the ellipse.
+	 * @param {number} length The height of the ellipse.
 	 */
-	static drawEllipseByOrientation(position, angle, width, height) {
+	static drawEllipseByOrientation(position, angle, width, length) {
 		translate(position.x, position.y);
 		rotate(radians(angle));
 
-		ellipse(0, -(height / 2), width, height);
+		ellipse(0, -(length / 2), width, length);
 
 		resetMatrix();
 	}
@@ -106,13 +106,13 @@ export class SideFin extends Bodypart {
 }
 
 /** Describes the back fin of a creature. */
-export class BackFin extends Bodypart {
+export class BackFin extends BodyPart {
 	/**
 	 * Creates a BackFin object.
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
 	 * @param {number} lengthInSegments The number of segments the fin will go through.
-	 * @param {Color} color Color of the bodypart.
+	 * @param {Color} color Color of the body part.
 	 */
 	constructor(segment, render, lengthInSegments, color) {
 		super(segment, render, color);
@@ -159,13 +159,13 @@ export class BackFin extends Bodypart {
 }
 
 /** Describes the tail fin of a creature. */
-export class TailFin extends Bodypart {
+export class TailFin extends BodyPart {
 	/**
 	 * Creates a TailFin object.
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
 	 * @param {number[]} distances The distances between the segments of the fin.
-	 * @param {Color} color Color of the bodypart.
+	 * @param {Color} color Color of the body part.
 	 */
 	constructor(segment, render, distances, color) {
 		super(segment, render, color);
@@ -214,14 +214,14 @@ export class TailFin extends Bodypart {
 }
 
 /** Describes a pair of antennas of a creature. */
-export class Antenna extends Bodypart {
+export class Antenna extends BodyPart {
 	/**
 	 * Creates a TailFin object.
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
 	 * @param {AntennaSegmentDescriptor} descriptors The descriptors of the segments of the antenna.
 	 * @param {number} angle The angle of the antennas.
-	 * @param {Color} color Color of the bodypart.
+	 * @param {Color} color Color of the body part.
 	 */
 	constructor(segment, render, descriptors, angle, color) {
 		super(segment, render, color);
@@ -300,7 +300,7 @@ class OneLeg {
 	 * Gets a new step location for the given leg.
 	 * @param {OneLeg} leg The leg to get a new target for.
 	 * @param {Point} frontVector The normalized front vector of the parent segment.
-	 * @param {Point} normalVector The normalized normal vector of the parent segment pointing torwards the legs direction.
+	 * @param {Point} normalVector The normalized normal vector of the parent segment pointing towards the legs direction.
 	 * @param {Point} stepStyler The direction vector to calculate the location of the next step.
 	 * @returns The new location to step to.
 	 */
@@ -354,19 +354,19 @@ class OneLeg {
 		}
 
 		for (const segment of leg.headSegment)
-			Segment.drawBodyparts(segment, Bodypart.BOTTOM);
+			Segment.drawBodyparts(segment, BodyPart.BOTTOM);
 
 		fill(color.r, color.g, color.b, color.a);
 
 		bezierLine.drawLoop(Segment.getPoints(leg.headSegment));
 
 		for (const segment of leg.headSegment)
-			Segment.drawBodyparts(segment, Bodypart.TOP);
+			Segment.drawBodyparts(segment, BodyPart.TOP);
 	}
 }
 
 /** Describes one pair of legs of a creature. */
-export class Leg extends Bodypart {
+export class Leg extends BodyPart {
 	/**
 	 * Creates a Leg object.
 	 * @param {Segment} segment The parent segment.
@@ -380,10 +380,10 @@ export class Leg extends Bodypart {
 
 		this.left = new OneLeg(segment.origin, descriptors);
 
-		const mirroreddescriptors = [];
+		const mirroredDescriptors = [];
 		for (const descriptor of descriptors)
-			mirroreddescriptors.push(LegSegmentDescriptor.mirror(descriptor));
-		this.right = new OneLeg(segment.origin, mirroreddescriptors);
+			mirroredDescriptors.push(LegSegmentDescriptor.mirror(descriptor));
+		this.right = new OneLeg(segment.origin, mirroredDescriptors);
 
 		this.stepTo = stepTo;
 	}
@@ -392,7 +392,7 @@ export class Leg extends Bodypart {
 	 * Draws one leg.
 	 * @param {Segment} segment The parent segment.
 	 * @param {Point} frontVector The normalized front vector of the parent segment.
-	 * @param {Point} normalVector The normalized normal vector of the parent segment pointing torwards the legs direction.
+	 * @param {Point} normalVector The normalized normal vector of the parent segment pointing towards the legs direction.
 	 * @param {OneLeg} leg The leg to draw.
 	 * @param {Color} color The color of the leg.
 	 * @param {Point} stepTo Point to step on.

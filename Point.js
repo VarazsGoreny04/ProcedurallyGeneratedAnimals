@@ -89,7 +89,7 @@ export default class Point {
 	}
 
 	/**
-	 * Gets the left normalvector of the given vector.
+	 * Gets the left normal vector of the given vector.
 	 * @param {Point} v The vector.
 	 * @returns The result of the calculation.
 	 */
@@ -98,7 +98,7 @@ export default class Point {
 	}
 
 	/**
-	 * Gets the right normalvector of the given vector.
+	 * Gets the right normal vector of the given vector.
 	 * @param {Point} v The vector.
 	 * @returns The result of the calculation.
 	 */

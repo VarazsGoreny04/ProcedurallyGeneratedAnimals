@@ -2,7 +2,7 @@ import * as bezierLine from './bezierLine.js';
 import Color from './Color.js';
 import Point from './Point.js';
 import Segment from './Segment.js';
-import { Bodypart } from './Bodypart.js';
+import { BodyPart } from './BodyPart.js';
 import { SegmentDescriptor } from './Descriptor.js';
 
 /** Describes an animal. */
@@ -10,21 +10,17 @@ export default class Animal {
 	/**
 	 * Creates an Animal object.
 	 * @param {Point} headPosition The head starting position.
-	 * @param {SegmentDescriptor[]} descriptors The discriptors of the body of the animal.
-	 * @param {number} turnAngle The maximum angle the animal can turn with.
+	 * @param {SegmentDescriptor[]} descriptors The descriptors of the body of the animal.
 	 * @param {Color} bodyColor The color of the animals body.
 	 * @param {number} speed The speed of the animal.
 	 */
-	constructor(headPosition, descriptors, turnAngle, bodyColor, speed) {
+	constructor(headPosition, descriptors, bodyColor, speed) {
 		if (descriptors.length < 2)
 			throw "An animal must have at least 2 segments!";
 
 		this.headSegment = Segment.createAndLink(headPosition, descriptors);
+
 		this.bodyColor = bodyColor;
-
-		this.headSegment.maxAngle = turnAngle;
-		this.headSegment.minAngle = -this.headSegment.maxAngle;
-
 		this.speed = speed;
 	}
 
@@ -66,14 +62,14 @@ export default class Animal {
 	/** Draws this animal instance. */
 	draw() {
 		for (const segment of this.headSegment)
-			Segment.drawBodyparts(segment, Bodypart.BOTTOM);
+			Segment.drawBodyparts(segment, BodyPart.BOTTOM);
 
 		Animal.drawOutline(this);
 		// Animal.drawCircles(this);
 		// Animal.drawSpine(this);
 
 		for (const segment of this.headSegment)
-			Segment.drawBodyparts(segment, Bodypart.TOP);
+			Segment.drawBodyparts(segment, BodyPart.TOP);
 	}
 
 	/**

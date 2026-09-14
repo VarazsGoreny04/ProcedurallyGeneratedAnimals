@@ -1,4 +1,4 @@
-import { Bodypart } from './Bodypart.js';
+import { BodyPart } from './BodyPart.js';
 import { SegmentDescriptor } from './Descriptor.js';
 import Point from './Point.js';
 
@@ -9,7 +9,7 @@ export default class Segment {
 	 * @param {Point} origin The position of the segment.
 	 * @param {number} distanceFromPrev The distance of this segment from the previous one.
 	 * @param {number} skinRadius The width of the creature at this segment.
-	 * @param {Bodypart[]} bodyparts The additional bodyparts.
+	 * @param {BodyPart[]} bodyparts The additional bodyparts.
 	 */
 	constructor(origin, distanceFromPrev, skinRadius, bodyparts = null) {
 		this.origin = origin;
@@ -39,7 +39,7 @@ export default class Segment {
 
 	/**
 	 * Creates the segments by the given descriptors and links them together.
-	 * @param {Point} startingPoint The starting poition of the first segment.
+	 * @param {Point} startingPoint The starting position of the first segment.
 	 * @param {SegmentDescriptor[]} segmentDescriptors The descriptors of the segments.
 	 * @returns The head segment of the linked list.
 	 */
@@ -64,8 +64,8 @@ export default class Segment {
 	}
 
 	/**
-	 * Pulls the given neighbour segment torwards this segment.
-	 * @param {Segment} segment The segment to pull torwards.
+	 * Pulls the given neighbour segment towards this segment.
+	 * @param {Segment} segment The segment to pull towards.
 	 * @param {Segment} segmentToPull The segment to pull.
 	 * @param {number} distanceBetween The needed distance in between the two segments.
 	 * @param {Segment} segmentInFront The segment on the other side of the main segment.

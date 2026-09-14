@@ -1,9 +1,10 @@
 import Color from './Color.js';
 import Point from './Point.js';
-import { Bodypart } from './Bodypart.js';
+import { BodyPart } from './BodyPart.js';
 import {
 	AnimalDescriptor,
 	SegmentDescriptor,
+	AngledSegmentDescriptor,
 	EyeDescriptor,
 	SideFinDescriptor,
 	BackFinDescriptor,
@@ -49,7 +50,7 @@ function pause() {
 }
 
 function changeAnimal(index) {
-	animal = animals[index].create();
+	animal = animals[index].create(new Point(windowWidth / 2, windowHeight / 2));
 
 	background(20, 80, 20);
 	animal.draw();
@@ -57,9 +58,8 @@ function changeAnimal(index) {
 
 window.setup = () => {
 	const snake = new AnimalDescriptor(
-		new Point(windowWidth / 2, windowHeight / 2),
 		[
-			new SegmentDescriptor(0, 26, [new EyeDescriptor(115, 22, 10, new Color(0, 0, 0))]),
+			new AngledSegmentDescriptor(0, 26, -22, 22, [new EyeDescriptor(115, 22, 10, new Color(0, 0, 0))]),
 			new SegmentDescriptor(26, 29),
 			new SegmentDescriptor(29, 23),
 			new SegmentDescriptor(22, 22),
@@ -120,14 +120,12 @@ window.setup = () => {
 			new SegmentDescriptor(22, 5),
 			new SegmentDescriptor(22, 4)
 		],
-		22,
 		new Color(190, 0, 0),
 		6
 	);
 	const lizard = new AnimalDescriptor(
-		new Point(windowWidth / 2, windowHeight / 2),
 		[
-			new SegmentDescriptor(0, 26, [new EyeDescriptor(115, 22, 10, new Color(0, 0, 0))]),
+			new AngledSegmentDescriptor(0, 26, -14, 14, [new EyeDescriptor(115, 22, 10, new Color(0, 0, 0))]),
 			new SegmentDescriptor(26, 29),
 			new SegmentDescriptor(29, 20),
 			new SegmentDescriptor(22, 30,
@@ -144,7 +142,7 @@ window.setup = () => {
 									],
 									130,
 									new Color(0, 190, 0),
-									Bodypart.BOTTOM
+									BodyPart.BOTTOM
 								),
 								new AntennaDescriptor(
 									[
@@ -153,7 +151,7 @@ window.setup = () => {
 									],
 									180,
 									new Color(0, 190, 0),
-									Bodypart.BOTTOM
+									BodyPart.BOTTOM
 								)
 							]
 						)
@@ -179,7 +177,7 @@ window.setup = () => {
 									],
 									140,
 									new Color(0, 190, 0),
-									Bodypart.BOTTOM
+									BodyPart.BOTTOM
 								),
 								new AntennaDescriptor(
 									[
@@ -188,7 +186,7 @@ window.setup = () => {
 									],
 									180,
 									new Color(0, 190, 0),
-									Bodypart.BOTTOM
+									BodyPart.BOTTOM
 								)
 							]
 						)
@@ -206,14 +204,12 @@ window.setup = () => {
 			new SegmentDescriptor(12, 3),
 			new SegmentDescriptor(6, 2)
 		],
-		14,
 		new Color(0, 190, 0),
 		3
 	);
 	const fish = new AnimalDescriptor(
-		new Point(windowWidth / 2, windowHeight / 2),
 		[
-			new SegmentDescriptor(0, 18, [new EyeDescriptor(100, 16, 20, new Color(0, 0, 100), Bodypart.BOTTOM)]),
+			new AngledSegmentDescriptor(0, 18, -20, 20, [new EyeDescriptor(100, 16, 20, new Color(0, 0, 100), BodyPart.BOTTOM)]),
 			new SegmentDescriptor(22, 30),
 			new SegmentDescriptor(33, 34,
 				[
@@ -229,7 +225,6 @@ window.setup = () => {
 			new SegmentDescriptor(15, 5),
 			new SegmentDescriptor(10, 2, [new TailFinDescriptor([10, 10, 10, 10, 10], new Color(0, 0, 140))])
 		],
-		20,
 		new Color(20, 130, 255),
 		8
 	);
