@@ -120,7 +120,7 @@ export class BodyPartDescriptor {
 export class EyeDescriptor extends BodyPartDescriptor {
 	/**
 	 * Creates an EyeDescriptor object.
-	 * @param {number} -angle, angleToFront The angle to push the eye from the center of the segment.
+	 * @param {number} angleToFront The angle to push the eye from the center of the segment.
 	 * @param {number} distanceToOrigin The distance to push the eye from the center of the segment.
 	 * @param {number} radius The radius of the eye.
 	 * @param {Color} color The color of the body part.

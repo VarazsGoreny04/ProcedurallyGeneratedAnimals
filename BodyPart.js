@@ -19,7 +19,7 @@ export class BodyPart {
 	 * Creates a BodyPart object.
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
-	 * @param {Color} color Color of the body part.
+	 * @param {Color} color The color of the body part.
 	 */
 	constructor(segment, render, color) {
 		this.segment = segment;
@@ -39,15 +39,15 @@ export class Eye extends BodyPart {
 	 * @param {boolean} render Where to render.
 	 * @param {number} angleToFront The angle of the eye from the front vector of the segment.
 	 * @param {number} distanceToOrigin The distance of the eye from the center of the segment.
-	 * @param {number} radius Radius of the eye.
-	 * @param {Color} color Color of the eye.
+	 * @param {number} diameter The diameter of the eye.
+	 * @param {Color} color The color of the eye.
 	 */
-	constructor(segment, render, angleToFront, distanceToOrigin, radius, color) {
+	constructor(segment, render, angleToFront, distanceToOrigin, diameter, color) {
 		super(segment, render, color);
 
-		this.radianToFront = radians(angleToFront);
+		this.angleToFront = angleToFront;
 		this.distanceToOrigin = distanceToOrigin;
-		this.diameter = radius * 2;
+		this.diameter = diameter;
 	}
 
 	/** Draws this eye instance. */
@@ -55,11 +55,12 @@ export class Eye extends BodyPart {
 		fill(this.color.r, this.color.g, this.color.b, this.color.a);
 
 		const frontScaled = Point.scale(Segment.getFrontVector(this.segment), this.distanceToOrigin);
+		const radianToFront = radians(this.angleToFront);
 
-		const eyePoint = Point.add(this.segment.origin, Point.rotateRadian(frontScaled, this.radianToFront));
+		const eyePoint = Point.add(this.segment.origin, Point.rotateRadian(frontScaled, radianToFront));
 		ellipse(eyePoint.x, eyePoint.y, this.diameter, this.diameter);
 
-		const eyePointMirrored = Point.add(this.segment.origin, Point.rotateRadian(frontScaled, -this.radianToFront));
+		const eyePointMirrored = Point.add(this.segment.origin, Point.rotateRadian(frontScaled, -radianToFront));
 		ellipse(eyePointMirrored.x, eyePointMirrored.y, this.diameter, this.diameter);
 	}
 }
@@ -73,7 +74,7 @@ export class SideFin extends BodyPart {
 	 * @param {*} width The width of the fin.
 	 * @param {*} length The length of the fin.
 	 * @param {*} angle The angle between the fin and the spine of the animal.
-	 * @param {Color} color Color of the fin.
+	 * @param {Color} color The color of the fin.
 	 */
 	constructor(segment, render, width, length, angle, color) {
 		super(segment, render, color);
@@ -121,7 +122,7 @@ export class BackFin extends BodyPart {
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
 	 * @param {number} lengthInSegments The number of segments the fin will go through.
-	 * @param {Color} color Color of the body part.
+	 * @param {Color} color The color of the body part.
 	 */
 	constructor(segment, render, lengthInSegments, color) {
 		super(segment, render, color);
@@ -174,7 +175,7 @@ export class TailFin extends BodyPart {
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
 	 * @param {number[]} distances The distances between the segments of the fin.
-	 * @param {Color} color Color of the body part.
+	 * @param {Color} color The color of the body part.
 	 */
 	constructor(segment, render, distances, color) {
 		super(segment, render, color);
@@ -230,7 +231,7 @@ export class Antenna extends BodyPart {
 	 * @param {boolean} render Where to render.
 	 * @param {AntennaSegmentDescriptor} descriptors The descriptors of the segments of the antenna.
 	 * @param {number} angle The angle of the antennas.
-	 * @param {Color} color Color of the body part.
+	 * @param {Color} color The color of the body part.
 	 */
 	constructor(segment, render, descriptors, angle, color) {
 		super(segment, render, color);

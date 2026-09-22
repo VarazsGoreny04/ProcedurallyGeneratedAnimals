@@ -59,7 +59,7 @@ function changeAnimal(index) {
 window.setup = () => {
 	const snake = new AnimalDescriptor(
 		[
-			new AngledSegmentDescriptor(0, 26, -22, 22, [new EyeDescriptor(115, 22, 5, new Color(0, 0, 0))]),
+			new AngledSegmentDescriptor(0, 26, -22, 22, [new EyeDescriptor(115, 22, 10, new Color(0, 0, 0))]),
 			new SegmentDescriptor(26, 29),
 			new SegmentDescriptor(29, 23),
 			new SegmentDescriptor(22, 22),
@@ -125,7 +125,7 @@ window.setup = () => {
 	);
 	const lizard = new AnimalDescriptor(
 		[
-			new AngledSegmentDescriptor(0, 26, -14, 14, [new EyeDescriptor(115, 22, 5, new Color(0, 0, 0))]),
+			new AngledSegmentDescriptor(0, 26, -14, 14, [new EyeDescriptor(115, 22, 10, new Color(0, 0, 0))]),
 			new SegmentDescriptor(26, 29),
 			new SegmentDescriptor(29, 20),
 			new SegmentDescriptor(22, 30,
@@ -209,7 +209,7 @@ window.setup = () => {
 	);
 	const fish = new AnimalDescriptor(
 		[
-			new AngledSegmentDescriptor(0, 18, -20, 20, [new EyeDescriptor(100, 16, 10, new Color(0, 0, 100), BodyPart.BOTTOM)]),
+			new AngledSegmentDescriptor(0, 18, -20, 20, [new EyeDescriptor(100, 16, 20, new Color(0, 0, 100), BodyPart.BOTTOM)]),
 			new SegmentDescriptor(22, 30),
 			new SegmentDescriptor(33, 34,
 				[
