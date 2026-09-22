@@ -1,5 +1,4 @@
-import { BodyPart } from './BodyPart.js';
-import { SegmentDescriptor } from './Descriptor.js';
+import { BodyPartDescriptor, SegmentDescriptor } from './Descriptor.js';
 import Point from './Point.js';
 
 /** Describes a segment of a creature. */
@@ -9,20 +8,24 @@ export default class Segment {
 	 * @param {Point} origin The position of the segment.
 	 * @param {number} distanceFromPrev The distance of this segment from the previous one.
 	 * @param {number} skinRadius The width of the creature at this segment.
-	 * @param {BodyPart[]} bodyparts The additional bodyparts.
+	 * @param {BodyPartDescriptor[]} bodyParts The additional bodyParts.
 	 */
-	constructor(origin, distanceFromPrev, skinRadius, bodyparts = null) {
+	constructor(origin, distanceFromPrev, skinRadius, bodyParts = null) {
 		this.origin = origin;
 		this.distanceFromPrev = distanceFromPrev;
 		this.skinRadius = skinRadius;
 		this.maxAngle = Math.min(20 * this.distanceFromPrev / this.skinRadius, 60);
 		this.minAngle = -this.maxAngle;
 
-		this.bodyparts = bodyparts;
-		if (bodyparts instanceof Array) {
-			for (const bodypart of bodyparts)
-				bodypart.segment = this;
+		if (bodyParts instanceof Array) {
+			const createdBodyParts = [];
+			for (const bodyPart of bodyParts)
+				createdBodyParts.push(bodyPart.create(this));
+
+			this.bodyParts = createdBodyParts;
 		}
+		else
+			this.bodyParts = null;
 
 		this.prevSegment = null;
 		this.nextSegment = null;
@@ -46,16 +49,16 @@ export default class Segment {
 	static createAndLink(startingPoint, segmentDescriptors) {
 		const result = segmentDescriptors[0].create(startingPoint);
 
-		let current = result;
+		let prev = result;
 		let next;
 
 		for (let index = 1; index < segmentDescriptors.length; ++index) {
-			next = segmentDescriptors[index].create(current.origin);
+			next = segmentDescriptors[index].create(prev.origin);
 
-			current.nextSegment = next;
-			next.prevSegment = current;
+			prev.nextSegment = next;
+			next.prevSegment = prev;
 
-			current = next;
+			prev = next;
 		}
 
 		Segment.pullNext(result);
@@ -165,15 +168,15 @@ export default class Segment {
 	}
 
 	/**
-	 * Draws all the bodyparts of the given segment set to the given render mode.
-	 * @param {Segment} segment The segment with the bodyparts.
+	 * Draws all the body parts of the given segment set to the given render mode.
+	 * @param {Segment} segment The segment with the body parts.
 	 * @param {boolean} render The render mode.
 	 */
-	static drawBodyparts(segment, render) {
-		if (segment.bodyparts instanceof Array) {
-			for (const bodypart of segment.bodyparts) {
-				if (bodypart.render === render)
-					bodypart.draw();
+	static drawBodyParts(segment, render) {
+		if (segment.bodyParts instanceof Array) {
+			for (const bodyPart of segment.bodyParts) {
+				if (bodyPart.render === render)
+					bodyPart.draw();
 			}
 		}
 	}
@@ -188,6 +191,6 @@ export default class Segment {
 	static restrictAngleOfRotation(firstSegment, secondSegment, direction) {
 		const fromSecondToFirst = Point.subtract(firstSegment.origin, secondSegment.origin);
 
-		return Point.restrictAngleOfRotation(fromSecondToFirst, direction, firstSegment.maxAngle, firstSegment.minAngle);
+		return Point.restrictAngleOfRotation(fromSecondToFirst, direction, firstSegment.minAngle, firstSegment.maxAngle);
 	}
 }

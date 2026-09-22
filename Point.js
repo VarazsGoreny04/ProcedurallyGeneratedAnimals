@@ -258,7 +258,7 @@ export default class Point {
 	 * @param {number} minAngle The minimum angle in degrees.
 	 * @returns The restricted vector.
 	 */
-	static restrictAngleOfRotation(baseVector, directionVector, maxAngle, minAngle) {
+	static restrictAngleOfRotation(baseVector, directionVector, minAngle, maxAngle) {
 		const angleBetween = Point.angleOfVectors(baseVector, directionVector);
 
 		if (minAngle < angleBetween && angleBetween < maxAngle)

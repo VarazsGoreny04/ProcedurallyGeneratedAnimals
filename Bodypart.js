@@ -16,7 +16,7 @@ export class BodyPart {
 	static BOTTOM = false;
 
 	/**
-	 * Creates a Bodypart object.
+	 * Creates a BodyPart object.
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
 	 * @param {Color} color Color of the body part.
@@ -47,7 +47,7 @@ export class Eye extends BodyPart {
 
 		this.radianToFront = radians(angleToFront);
 		this.distanceToOrigin = distanceToOrigin;
-		this.radius = radius;
+		this.diameter = radius * 2;
 	}
 
 	/** Draws this eye instance. */
@@ -57,20 +57,29 @@ export class Eye extends BodyPart {
 		const frontScaled = Point.scale(Segment.getFrontVector(this.segment), this.distanceToOrigin);
 
 		const eyePoint = Point.add(this.segment.origin, Point.rotateRadian(frontScaled, this.radianToFront));
-		ellipse(eyePoint.x, eyePoint.y, this.radius, this.radius);
+		ellipse(eyePoint.x, eyePoint.y, this.diameter, this.diameter);
 
 		const eyePointMirrored = Point.add(this.segment.origin, Point.rotateRadian(frontScaled, -this.radianToFront));
-		ellipse(eyePointMirrored.x, eyePointMirrored.y, this.radius, this.radius);
+		ellipse(eyePointMirrored.x, eyePointMirrored.y, this.diameter, this.diameter);
 	}
 }
 
 /** Describes a pair of fins of a creature. */
 export class SideFin extends BodyPart {
-	constructor(segment, render, length, width, angle, color) {
+	/**
+	 * Creates a SideFin object.
+	 * @param {Segment} segment The parent segment.
+	 * @param {boolean} render Where to render.
+	 * @param {*} width The width of the fin.
+	 * @param {*} length The length of the fin.
+	 * @param {*} angle The angle between the fin and the spine of the animal.
+	 * @param {Color} color Color of the fin.
+	 */
+	constructor(segment, render, width, length, angle, color) {
 		super(segment, render, color);
 
-		this.length = length;
 		this.width = width;
+		this.length = length;
 		this.angle = angle;
 	}
 
@@ -85,7 +94,7 @@ export class SideFin extends BodyPart {
 		translate(position.x, position.y);
 		rotate(radians(angle));
 
-		ellipse(0, -(length / 2), width, length);
+		ellipse(-(length / 2), 0, length, width);
 
 		resetMatrix();
 	}
@@ -95,13 +104,13 @@ export class SideFin extends BodyPart {
 		fill(this.color.r, this.color.g, this.color.b, this.color.a);
 
 		const front = Segment.getFrontVector(this.segment);
-		const frontAngle = Point.angleOfVector(Point.normalRight(front));
+		const frontAngle = Point.angleOfVector(front);
 
-		const originOne = Point.add(this.segment.origin, Point.normalLeft(front));
-		SideFin.drawEllipseByOrientation(originOne, frontAngle - this.angle, this.width, this.length);
+		const originLeft = Point.add(this.segment.origin, Point.normalLeft(front));
+		SideFin.drawEllipseByOrientation(originLeft, frontAngle - this.angle, this.width, this.length);
 
-		const originTwo = Point.add(this.segment.origin, Point.normalRight(front));
-		SideFin.drawEllipseByOrientation(originTwo, frontAngle + this.angle, this.width, this.length);
+		const originRight = Point.add(this.segment.origin, Point.normalRight(front));
+		SideFin.drawEllipseByOrientation(originRight, frontAngle + this.angle, this.width, this.length);
 	}
 }
 
@@ -354,14 +363,14 @@ class OneLeg {
 		}
 
 		for (const segment of leg.headSegment)
-			Segment.drawBodyparts(segment, BodyPart.BOTTOM);
+			Segment.drawBodyParts(segment, BodyPart.BOTTOM);
 
 		fill(color.r, color.g, color.b, color.a);
 
 		bezierLine.drawLoop(Segment.getPoints(leg.headSegment));
 
 		for (const segment of leg.headSegment)
-			Segment.drawBodyparts(segment, BodyPart.TOP);
+			Segment.drawBodyParts(segment, BodyPart.TOP);
 	}
 }
 
@@ -378,11 +387,11 @@ export class Leg extends BodyPart {
 	constructor(segment, render, descriptors, stepTo, color) {
 		super(segment, render, color);
 
-		this.left = new OneLeg(segment.origin, descriptors);
-
 		const mirroredDescriptors = [];
 		for (const descriptor of descriptors)
 			mirroredDescriptors.push(LegSegmentDescriptor.mirror(descriptor));
+
+		this.left = new OneLeg(segment.origin, descriptors);
 		this.right = new OneLeg(segment.origin, mirroredDescriptors);
 
 		this.stepTo = stepTo;
@@ -390,15 +399,15 @@ export class Leg extends BodyPart {
 
 	/**
 	 * Draws one leg.
-	 * @param {Segment} segment The parent segment.
+	 * @param {Point} origin The origin of the parent segment.
 	 * @param {Point} frontVector The normalized front vector of the parent segment.
 	 * @param {Point} normalVector The normalized normal vector of the parent segment pointing towards the legs direction.
 	 * @param {OneLeg} leg The leg to draw.
 	 * @param {Color} color The color of the leg.
 	 * @param {Point} stepTo Point to step on.
 	 */
-	static drawOne(segment, frontVector, normalVector, leg, color, stepTo) {
-		leg.headSegment.origin = Point.add(segment.origin, Point.scale(normalVector, leg.headSegment.distanceFromPrev));
+	static drawOne(origin, frontVector, normalVector, leg, color, stepTo) {
+		leg.headSegment.origin = Point.add(origin, Point.scale(normalVector, leg.headSegment.distanceFromPrev));
 
 		const distanceFromTarget = Point.distance(leg.standsOn, leg.headSegment.origin);
 		const bodyLegAngle = Math.abs(Point.angleOfVectors(frontVector, Point.subtract(leg.headSegment.origin, leg.headSegment.nextSegment.origin)));
@@ -413,7 +422,7 @@ export class Leg extends BodyPart {
 	draw() {
 		const normalizedFrontVector = Point.normalize(Segment.getFrontVector(this.segment));
 
-		Leg.drawOne(this.segment, normalizedFrontVector, Point.normalRight(normalizedFrontVector), this.left, this.color, this.stepTo);
-		Leg.drawOne(this.segment, normalizedFrontVector, Point.normalLeft(normalizedFrontVector), this.right, this.color, this.stepTo);
+		Leg.drawOne(this.segment.origin, normalizedFrontVector, Point.normalRight(normalizedFrontVector), this.left, this.color, this.stepTo);
+		Leg.drawOne(this.segment.origin, normalizedFrontVector, Point.normalLeft(normalizedFrontVector), this.right, this.color, this.stepTo);
 	}
 }

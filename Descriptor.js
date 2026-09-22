@@ -34,12 +34,12 @@ export class SegmentDescriptor {
 	 * Creates a SegmentDescriptor object.
 	 * @param {number} segmentDistance The distance form the previous segment.
 	 * @param {number} skinRadius The radius of the skin at the segment.
-	 * @param {BodypartDescriptor[]} bodypartDescriptors The bodyparts of the segment.
+	 * @param {BodyPartDescriptor[]} bodyPartDescriptors The body parts of the segment.
 	 */
-	constructor(segmentDistance, skinRadius, bodypartDescriptors = undefined) {
+	constructor(segmentDistance, skinRadius, bodyPartDescriptors = undefined) {
 		this.segmentDistance = segmentDistance;
 		this.skinRadius = Math.abs(skinRadius);
-		this.bodypartDescriptors = bodypartDescriptors;
+		this.bodyPartDescriptors = bodyPartDescriptors;
 	}
 
 	/**
@@ -47,21 +47,12 @@ export class SegmentDescriptor {
 	 * @returns The Segment object.
 	 */
 	create(prevOrigin) {
-		const segment = new Segment(
+		return new Segment(
 			new Point(prevOrigin.x - this.segmentDistance, prevOrigin.y),
 			Math.abs(this.segmentDistance),
 			this.skinRadius,
-			null
+			this.bodyPartDescriptors
 		);
-
-		if (this.bodypartDescriptors instanceof Array) {
-			segment.bodyparts = [];
-
-			for (const bodypartDescriptor of this.bodypartDescriptors)
-				segment.bodyparts.push(bodypartDescriptor.create(segment));
-		}
-
-		return segment;
 	}
 }
 
@@ -73,13 +64,13 @@ export class AngledSegmentDescriptor extends SegmentDescriptor {
 	 * @param {number} skinRadius The radius of the skin at the segment.
 	 * @param {number} minAngle The minimum angle of the joint.
 	 * @param {number} maxAngle The maximum angle of the joint.
-	 * @param {BodypartDescriptor[]} bodypartDescriptors The bodyparts of the segment.
+	 * @param {BodyPartDescriptor[]} bodyPartDescriptors The body parts of the segment.
 	 */
-	constructor(segmentDistance, skinRadius, minAngle, maxAngle, bodypartDescriptors = null) {
-		super(segmentDistance, skinRadius, bodypartDescriptors);
+	constructor(segmentDistance, skinRadius, minAngle, maxAngle, bodyPartDescriptors = null) {
+		super(segmentDistance, skinRadius, bodyPartDescriptors);
 
 		if (this.minAngle > this.maxAngle)
-			throw "maxAngle should be bigger or equal than minAngle!"
+			throw "The maxAngle should be bigger or equal than minAngle!"
 
 		this.minAngle = minAngle;
 		this.maxAngle = maxAngle;
@@ -92,32 +83,25 @@ export class AngledSegmentDescriptor extends SegmentDescriptor {
 	 */
 	create(prevOrigin) {
 		const segment = new Segment(
-			new Point(prevOrigin.x, prevOrigin.y - this.segmentDistance),
+			new Point(prevOrigin.x - this.segmentDistance, prevOrigin.y),
 			Math.abs(this.segmentDistance),
 			this.skinRadius,
-			null
+			this.bodyPartDescriptors
 		);
 
 		segment.maxAngle = this.maxAngle;
 		segment.minAngle = this.minAngle;
-
-		if (this.bodypartDescriptors instanceof Array) {
-			segment.bodyparts = [];
-
-			for (const bodypartDescriptor of this.bodypartDescriptors)
-				segment.bodyparts.push(bodypartDescriptor.create(segment));
-		}
 
 		return segment;
 	}
 }
 
 /** Describes a body part. */
-export class BodypartDescriptor {
+export class BodyPartDescriptor {
 	/**
-	 * Creates a BodypartDescriptor object.
+	 * Creates a BodyPartDescriptor object.
 	 * @param {boolean} render Where to render.
-	 * @param {Color} color The color of the bodypart.
+	 * @param {Color} color The color of the body part.
 	 */
 	constructor(render, color) {
 		this.render = render;
@@ -125,21 +109,21 @@ export class BodypartDescriptor {
 	}
 
 	/**
-	 * Creates a Bodypart object by this descriptor.
+	 * Creates a BodyPart object by this descriptor.
 	 * @param {Segment} segment The parent segment.
-	 * @returns The Bodypart object.
+	 * @returns The BodyPart object.
 	 */
 	create(segment) { throw "This function must be implemented in an inherited class!"; }
 }
 
 /** Describes an eye. */
-export class EyeDescriptor extends BodypartDescriptor {
+export class EyeDescriptor extends BodyPartDescriptor {
 	/**
 	 * Creates an EyeDescriptor object.
 	 * @param {number} -angle, angleToFront The angle to push the eye from the center of the segment.
 	 * @param {number} distanceToOrigin The distance to push the eye from the center of the segment.
 	 * @param {number} radius The radius of the eye.
-	 * @param {Color} color The color of the bodypart.
+	 * @param {Color} color The color of the body part.
 	 * @param {boolean} render Where to render.
 	 */
 	constructor(angleToFront, distanceToOrigin, radius, color, render = BodyPart.TOP) {
@@ -159,7 +143,7 @@ export class EyeDescriptor extends BodypartDescriptor {
 }
 
 /** Describes a fin. */
-export class SideFinDescriptor extends BodypartDescriptor {
+export class SideFinDescriptor extends BodyPartDescriptor {
 	/**
 	 * Creates a SideFinDescriptor object.
 	 * @param {number} length The length of the fin.
@@ -185,7 +169,7 @@ export class SideFinDescriptor extends BodypartDescriptor {
 }
 
 /** Describes a fin. */
-export class BackFinDescriptor extends BodypartDescriptor {
+export class BackFinDescriptor extends BodyPartDescriptor {
 	/**
 	 * Creates a BackFinDescriptor object.
 	 * @param {number} lengthInSegments The number of segments the fin will go through.
@@ -207,7 +191,7 @@ export class BackFinDescriptor extends BodypartDescriptor {
 }
 
 /** Describes a fin. */
-export class TailFinDescriptor extends BodypartDescriptor {
+export class TailFinDescriptor extends BodyPartDescriptor {
 	/**
 	 * Creates a TailFinDescriptor object.
 	 * @param {number[]} segmentDistances The distances of the segments of the fin.
@@ -229,7 +213,7 @@ export class TailFinDescriptor extends BodypartDescriptor {
 }
 
 /** Describes an antenna. */
-export class AntennaDescriptor extends BodypartDescriptor {
+export class AntennaDescriptor extends BodyPartDescriptor {
 	/**
 	 * Creates an AntennaDescriptor object.
 	 * @param {AntennaSegmentDescriptor[]} antennaSegmentDescriptors The segments of the antenna.
@@ -282,7 +266,7 @@ export class AntennaSegmentDescriptor extends SegmentDescriptor {
 }
 
 /** Describes a leg. */
-export class LegDescriptor extends BodypartDescriptor {
+export class LegDescriptor extends BodyPartDescriptor {
 	/**
 	 * Creates a LegDescriptor object.
 	 * @param {LegSegmentDescriptor[]} legSegmentDescriptors The segments of the leg.
@@ -313,10 +297,10 @@ export class LegSegmentDescriptor extends AngledSegmentDescriptor {
 	 * @param {number} skinRadius The radius of the skin at the segment.
 	 * @param {number} minAngle The minimum angle of the joint.
 	 * @param {number} maxAngle The maximum angle of the joint.
-	 * @param {BodypartDescriptor[]} bodypartDescriptors The bodyparts of the segment.
+	 * @param {BodyPartDescriptor[]} bodyPartDescriptors The body parts of the segment.
 	 */
-	constructor(segmentDistance, skinRadius, minAngle, maxAngle, bodypartDescriptors = null) {
-		super(segmentDistance, skinRadius, minAngle, maxAngle, bodypartDescriptors);
+	constructor(segmentDistance, skinRadius, minAngle, maxAngle, bodyPartDescriptors = null) {
+		super(segmentDistance, skinRadius, minAngle, maxAngle, bodyPartDescriptors);
 	}
 
 	/**
@@ -330,7 +314,26 @@ export class LegSegmentDescriptor extends AngledSegmentDescriptor {
 			descriptor.skinRadius,
 			-descriptor.maxAngle,
 			-descriptor.minAngle,
-			descriptor.bodypartDescriptors
+			descriptor.bodyPartDescriptors
 		);
+	}
+
+	/**
+	 * Creates a Segment object by this descriptor.
+	 * @param {Point} prevOrigin The origin of the previous segment.
+	 * @returns The Segment object.
+	 */
+	create(prevOrigin) {
+		const segment = new Segment(
+			new Point(prevOrigin.x, prevOrigin.y - this.segmentDistance),
+			Math.abs(this.segmentDistance),
+			this.skinRadius,
+			this.bodyPartDescriptors
+		);
+
+		segment.maxAngle = this.maxAngle;
+		segment.minAngle = this.minAngle;
+
+		return segment;
 	}
 }

@@ -62,14 +62,14 @@ export default class Animal {
 	/** Draws this animal instance. */
 	draw() {
 		for (const segment of this.headSegment)
-			Segment.drawBodyparts(segment, BodyPart.BOTTOM);
+			Segment.drawBodyParts(segment, BodyPart.BOTTOM);
 
 		Animal.drawOutline(this);
 		// Animal.drawCircles(this);
 		// Animal.drawSpine(this);
 
 		for (const segment of this.headSegment)
-			Segment.drawBodyparts(segment, BodyPart.TOP);
+			Segment.drawBodyParts(segment, BodyPart.TOP);
 	}
 
 	/**
