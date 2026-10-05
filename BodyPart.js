@@ -235,10 +235,11 @@ export class Antenna extends BodyPart {
 	 */
 	constructor(segment, render, descriptors, angle, color) {
 		super(segment, render, color);
+		this.angle = angle;
 
 		this.points = Segment.getPoints(Segment.createAndLink(new Point(0, 0), descriptors));
 
-		if (Math.abs(this.angle) < 1)
+		if (Math.abs(this.angle) % 180 < 1)
 			this.pointsMirrored = null;
 		else {
 			this.pointsMirrored = [];
@@ -246,8 +247,6 @@ export class Antenna extends BodyPart {
 			for (const point of this.points)
 				this.pointsMirrored.push(new Point(point.x, -point.y));
 		}
-
-		this.angle = angle;
 	}
 
 	/**
