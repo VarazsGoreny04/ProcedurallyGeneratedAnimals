@@ -27,8 +27,11 @@ export class BodyPart {
 		this.color = color;
 	}
 
-	/** Draws this body part instance. */
-	draw() { throw "This function must be implemented in an inherited class!"; }
+	/**
+	 * Draws this body part instance.
+	 * @throws If this function is not overridden in an inherited class.
+	 */
+	draw() { throw "This function must be overridden in an inherited class!"; }
 }
 
 /** Describes one pair of eyes of a creature. */
@@ -71,9 +74,9 @@ export class SideFin extends BodyPart {
 	 * Creates a SideFin object.
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
-	 * @param {*} width The width of the fin.
-	 * @param {*} length The length of the fin.
-	 * @param {*} angle The angle between the fin and the spine of the animal.
+	 * @param {number} width The width of the fin.
+	 * @param {number} length The length of the fin.
+	 * @param {number} angle The angle between the fin and the spine of the animal.
 	 * @param {Color} color The color of the fin.
 	 */
 	constructor(segment, render, width, length, angle, color) {
@@ -123,6 +126,7 @@ export class BackFin extends BodyPart {
 	 * @param {boolean} render Where to render.
 	 * @param {number} lengthInSegments The number of segments the fin will go through.
 	 * @param {Color} color The color of the body part.
+	 * @throws If the length is less than 2.
 	 */
 	constructor(segment, render, lengthInSegments, color) {
 		super(segment, render, color);
@@ -176,6 +180,7 @@ export class TailFin extends BodyPart {
 	 * @param {boolean} render Where to render.
 	 * @param {number[]} distances The distances between the segments of the fin.
 	 * @param {Color} color The color of the body part.
+	 * @throws If less than 2 distance discriptors are given.
 	 */
 	constructor(segment, render, distances, color) {
 		super(segment, render, color);
@@ -226,7 +231,7 @@ export class TailFin extends BodyPart {
 /** Describes a pair of antennas of a creature. */
 export class Antenna extends BodyPart {
 	/**
-	 * Creates a TailFin object.
+	 * Creates an Antenna object.
 	 * @param {Segment} segment The parent segment.
 	 * @param {boolean} render Where to render.
 	 * @param {AntennaSegmentDescriptor} descriptors The descriptors of the segments of the antenna.
@@ -275,7 +280,7 @@ export class Antenna extends BodyPart {
 			Antenna.drawLoopByOrientation(this.segment.origin, bodyAngle - this.angle, this.pointsMirrored);
 		}
 		else
-			Antenna.drawLoopByOrientation(this.segment.origin, bodyAngle, this.points);
+			Antenna.drawLoopByOrientation(this.segment.origin, bodyAngle + this.angle, this.points);
 	}
 }
 
@@ -285,6 +290,7 @@ class OneLeg {
 	 * Creates a OneLeg object.
 	 * @param {Point} origin The origin of the parent segment.
 	 * @param {LegSegmentDescriptor[]} descriptors The descriptors of the segments of the leg.
+	 * @throws If the leg has less than 2 segments.
 	 */
 	constructor(origin, descriptors) {
 		this.headSegment = Segment.createAndLink(origin, descriptors);

@@ -110,15 +110,15 @@ export default class Segment {
 	/**
 	 * Gets the front vector of the given segment.
 	 * @param {Segment} segment The given segment.
-	 * @throws If the segment has no neighbours.
 	 * @returns The calculated vector.
+	 * @throws If the segment has no neighbours.
 	 */
 	static getFrontVector(segment) {
 		let prev = segment.prevSegment;
 		let next = segment.nextSegment;
 
 		if (!(prev instanceof Segment) && !(next instanceof Segment))
-			throw "Not enough segments!";
+			throw "The segment must have at least one neighbour to calculate the front vector!";
 
 		prev ??= segment;
 		next ??= segment;

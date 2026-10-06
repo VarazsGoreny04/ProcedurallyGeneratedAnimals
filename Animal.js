@@ -13,6 +13,7 @@ export default class Animal {
 	 * @param {SegmentDescriptor[]} descriptors The descriptors of the body of the animal.
 	 * @param {Color} bodyColor The color of the animals body.
 	 * @param {number} speed The speed of the animal.
+	 * @throws If the animal is initialized with fewer than 2 segments.
 	 */
 	constructor(headPosition, descriptors, bodyColor, speed) {
 		if (descriptors.length < 2)

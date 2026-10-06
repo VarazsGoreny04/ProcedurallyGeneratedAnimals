@@ -65,6 +65,7 @@ export class AngledSegmentDescriptor extends SegmentDescriptor {
 	 * @param {number} minAngle The minimum angle of the joint.
 	 * @param {number} maxAngle The maximum angle of the joint.
 	 * @param {BodyPartDescriptor[]} bodyPartDescriptors The body parts of the segment.
+	 * @throws If the maxAngle is less than minAngle.
 	 */
 	constructor(segmentDistance, skinRadius, minAngle, maxAngle, bodyPartDescriptors = null) {
 		super(segmentDistance, skinRadius, bodyPartDescriptors);
@@ -112,8 +113,9 @@ export class BodyPartDescriptor {
 	 * Creates a BodyPart object by this descriptor.
 	 * @param {Segment} segment The parent segment.
 	 * @returns The BodyPart object.
+	 * @throws If this function is not overridden in an inherited class.
 	 */
-	create(segment) { throw "This function must be implemented in an inherited class!"; }
+	create(segment) { throw "This function must be overridden in an inherited class!"; }
 }
 
 /** Describes an eye. */
@@ -129,7 +131,7 @@ export class EyeDescriptor extends BodyPartDescriptor {
 	constructor(angleToFront, distanceToOrigin, radius, color, render = BodyPart.TOP) {
 		super(render, color);
 
-		this.degreeToFront = Math.abs(angleToFront);
+		this.degreeToFront = angleToFront;
 		this.distanceToOrigin = Math.abs(distanceToOrigin);
 		this.radius = Math.abs(radius);
 	}
