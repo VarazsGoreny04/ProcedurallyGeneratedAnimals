@@ -1,4 +1,7 @@
 # ProcedurallyGeneratedAnimals
+
+Try it out online: [To the game](https://varazsgoreny04.github.io/ProcedurallyGeneratedAnimals/)
+
 This is a library that generates simple 2D procedurally generated animals in an HTML Canvas using JavaScript and the ***p5.js*** library.
 The library also provides an example HTML document named ***index.html*** and an example JS file named ***simulator.js*** with 3 pre-generated animals:
 - Snake
